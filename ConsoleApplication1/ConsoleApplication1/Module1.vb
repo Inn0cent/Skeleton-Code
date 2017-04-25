@@ -3,8 +3,6 @@
 'written by the AQA Programmer Team
 'developed in the Visual Studio 2008 programming environment
 
-'EDITED VERSION
-
 Module Module1
     Sub Main()
         Dim MenuOption As Integer
@@ -18,19 +16,18 @@ Module Module1
             Console.WriteLine()
             Console.WriteLine("1. Run simulation with default settings")
             Console.WriteLine("2. Run simulation with custom settings")
-            Console.WriteLine("3. Rabbit Paradise")
-            Console.WriteLine("4. Exit")
+            Console.WriteLine("3. Exit")
             Console.WriteLine()
             Console.Write("Select option: ")
             MenuOption = CInt(Console.ReadLine())
-            If MenuOption = 1 Or MenuOption = 2 Or MenuOption = 3 Then
+            If MenuOption = 1 Or MenuOption = 2 Then
                 If MenuOption = 1 Then
                     LandscapeSize = 15
                     InitialWarrenCount = 5
                     InitialFoxCount = 5
                     Variability = 0
                     FixedInitialLocations = True
-                ElseIf MenuOption = 2 Then
+                Else
                     Console.Write("Landscape Size: ")
                     LandscapeSize = CInt(Console.ReadLine())
                     Console.Write("Initial number of warrens: ")
@@ -39,12 +36,6 @@ Module Module1
                     InitialFoxCount = CInt(Console.ReadLine())
                     Console.Write("Randomness variability (percent): ")
                     Variability = CInt(Console.ReadLine())
-                    FixedInitialLocations = False
-                Else
-                    LandscapeSize = 20
-                    InitialWarrenCount = 20
-                    InitialFoxCount = 0
-                    Variability = 1
                     FixedInitialLocations = False
                 End If
                 Dim Sim As New Simulation(LandscapeSize, InitialWarrenCount, InitialFoxCount, Variability, FixedInitialLocations)
@@ -85,27 +76,14 @@ Module Module1
             DrawLandscape()
             Do
                 Console.WriteLine()
-                Console.WriteLine("0. Advance 10 periods hiding detail")
                 Console.WriteLine("1. Advance to next time period showing detail")
                 Console.WriteLine("2. Advance to next time period hiding detail")
                 Console.WriteLine("3. Inspect fox")
                 Console.WriteLine("4. Inspect warren")
                 Console.WriteLine("5. Exit")
-                Console.WriteLine("6. Find biggest warren")
-                Console.WriteLine("7. Inspect all rabbits")
-                Console.WriteLine("8. Display adjacency list")
-                Console.WriteLine("9. Display adjacency matrix")
-                Console.WriteLine("10. Find route between warrens")
                 Console.WriteLine()
                 Console.Write("Select option: ")
                 MenuOption = CInt(Console.ReadLine())
-                If MenuOption = 0 Then
-                    For i = 1 To 10
-                        TimePeriod += 1
-                        ShowDetail = False
-                        AdvanceTimePeriod()
-                    Next
-                End If
                 If MenuOption = 1 Then
                     TimePeriod += 1
                     ShowDetail = True
@@ -134,30 +112,6 @@ Module Module1
                             Landscape(x, y).Warren.ListRabbits()
                         End If
                     End If
-                End If
-                If MenuOption = 6 Then
-                    findBiggest()
-                End If
-                If MenuOption = 7 Then
-                    For x = 0 To LandscapeSize - 1
-                        For y = 0 To LandscapeSize - 1
-                            If Not Landscape(x, y).Warren Is Nothing Then
-                                Landscape(x, y).Warren.ListRabbits()
-                            End If
-                        Next
-                    Next
-                End If
-                If MenuOption = 8 Then
-                    Dim theGraph As New WarrenGraph
-                    theGraph.adjList()
-                End If
-                If MenuOption = 9 Then
-                    Dim theGraph As New WarrenGraph
-                    theGraph.adjMatrix()
-                End If
-                If MenuOption = 10 Then
-                    Dim theGraph As New WarrenGraph
-                    theGraph.findRoute()
                 End If
             Loop While (WarrenCount > 0 Or FoxCount > 0) And MenuOption <> 5
             Console.ReadKey()
@@ -371,147 +325,16 @@ Module Module1
                 Console.WriteLine()
             Next
         End Sub
-
-        Sub findBiggest()
-            Dim numberOfRabbits As Integer = 0
-            Dim xCoord As Integer = 0
-            Dim yCoord As Integer = 0
-
-            For x = 0 To LandscapeSize - 1
-                For y = 0 To LandscapeSize - 1
-                    If Not Landscape(x, y).Warren Is Nothing Then
-                        If Landscape(x, y).Warren.GetRabbitCount > numberOfRabbits Then
-                            numberOfRabbits = Landscape(x, y).Warren.GetRabbitCount
-                            xCoord = x
-                            yCoord = y
-                        End If
-                    End If
-                Next
-            Next
-
-            Console.WriteLine("Biggest warren at ({0}, {1})", xCoord, yCoord)
-        End Sub
-
-    End Class
-
-    Class WarrenGraph
-        Private nodes As Node()
-        Private thing As String
-
-        Public Sub New()
-            Dim n1 As New Node(1, 1, 2, 8, 9, 7)
-            Dim n2 As New Node(2, 8, 13, 4, 1, 1)
-            Dim n3 As New Node(9, 7, 1, 1, 13, 4)
-            Dim n4 As New Node(13, 4, 9, 7, 2, 8)
-            nodes = New Node() {n1, n2, n3, n4}
-        End Sub
-
-        Public Sub adjList()
-            Console.WriteLine()
-            Console.WriteLine("Self" + vbTab + "Left" + vbTab + "Right")
-            For i = 0 To nodes.Length - 1
-                Console.WriteLine(nodes(i).getCoord("s") + vbTab + nodes(i).getCoord("l") + vbTab + nodes(i).getCoord("r"))
-            Next
-        End Sub
-
-        Public Sub adjMatrix()
-            Console.WriteLine()
-            Console.Write("       ")
-            For i = 0 To nodes.Length - 1
-                Console.Write(nodes(i).getCoord("s") + "   ")
-            Next
-            Console.WriteLine()
-            For i = 0 To nodes.Length - 1
-                Console.Write(nodes(i).getCoord("s") + vbTab)
-                For j = 0 To nodes.Length - 1
-                    If nodes(i).getCoord("r") = nodes(j).getCoord("s") Or nodes(i).getCoord("l") = nodes(j).getCoord("s") Then
-                        Dim x1, x2, y1, y2 As Double
-                        Dim distance As Double
-                        getIntegerCoord(x1, y1, i)
-                        getIntegerCoord(x2, y2, j)
-                        distance = DistanceBetween(x1, y1, x2, y2)
-                        Console.Write(Math.Round(distance, 1).ToString + vbTab)
-                    Else
-                        Console.Write(vbTab)
-                    End If
-                Next
-                Console.WriteLine()
-            Next
-        End Sub
-
-        Public Sub findRoute()
-            Dim coord1, coord2 As String
-            Dim found As Boolean = False
-            Console.WriteLine("Please enter the first warren in the form (x,y)")
-            coord1 = Console.ReadLine
-            Console.WriteLine("Please enter the second warren in the form (x,y)")
-            coord2 = Console.ReadLine
-            For i = 0 To nodes.Length - 1
-                If nodes(i).getCoord("s") = coord1 Then
-                    If nodes(i).getCoord("l") = coord2 Or nodes(i).getCoord("r") = coord2 Then
-                        found = True
-                    End If
-                End If
-            Next
-
-            If found Then
-                Console.WriteLine("The warrens are connected")
-            Else
-                Console.WriteLine("The warrens are not connected")
-            End If
-        End Sub
-
-        Private Sub getIntegerCoord(ByRef x As Integer, ByRef y As Integer, ByRef index As Integer)
-            x = nodes(index).getCoord("s").IndexOf(",")
-            y = nodes(index).getCoord("s").Substring(x + 1, nodes(index).getCoord("s").Length - 2 - x)
-            x = nodes(index).getCoord("s").Substring(1, x - 1)
-        End Sub
-
-        Private Function DistanceBetween(ByVal x1 As Integer, ByVal y1 As Integer, ByVal x2 As Integer, ByVal y2 As Integer) As Double
-            Return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2))
-        End Function
-
-    End Class
-
-    Class Node
-        Private selfX As Integer
-        Private selfY As Integer
-        Private leftBranchX As Integer
-        Private leftBranchY As Integer
-        Private rightBranchX As Integer
-        Private rightBranchY As Integer
-
-        Public Sub New(ByVal sx As Integer, ByVal sy As Integer, ByVal lx As Integer, ByVal ly As Integer, ByVal rx As Integer, ByVal ry As Integer)
-            selfX = sx
-            selfY = sy
-            leftBranchX = lx
-            leftBranchY = ly
-            rightBranchX = rx
-            rightBranchY = ry
-        End Sub
-
-        Public Function getCoord(ByVal branch As String) As String
-            If branch = "l" Then
-                Return ("(" + leftBranchX.ToString + "," + leftBranchY.ToString + ")")
-            End If
-            If branch = "r" Then
-                Return ("(" + rightBranchX.ToString + "," + rightBranchY.ToString + ")")
-            End If
-            If branch = "s" Then
-                Return ("(" + selfX.ToString + "," + selfY.ToString + ")")
-            End If
-        End Function
-
     End Class
 
     Class Warren
-        Protected Const MaxRabbitsInWarren As Integer = 99
-        Protected Rabbits() As Rabbit
-        Protected RabbitCount As Integer = 0
-        Protected PeriodsRun As Integer = 0
-        Protected AlreadySpread As Boolean = False
-        Protected Variability As Integer
-        Protected Shared Rnd As New Random()
+        Private Const MaxRabbitsInWarren As Integer = 99
+        Private Rabbits() As Rabbit
+        Private RabbitCount As Integer = 0
+        Private PeriodsRun As Integer = 0
+        Private AlreadySpread As Boolean = False
+        Private Variability As Integer
+        Private Shared Rnd As New Random()
 
         Public Sub New(ByVal Variability As Integer)
             Me.Variability = Variability
@@ -734,24 +557,14 @@ Module Module1
 
     Class Fox
         Inherits Animal
-        Enum Genders
-            Male
-            Female
-        End Enum
         Private FoodUnitsNeeded As Integer = 10
         Private FoodUnitsConsumedThisPeriod As Integer = 0
         Private Const DefaultLifespan As Integer = 7
         Private Const DefaultProbabilityDeathOtherCauses As Double = 0.1
-        Private Gender As Genders
 
         Public Sub New(ByVal Variability As Integer)
             MyBase.New(DefaultLifespan, DefaultProbabilityDeathOtherCauses, Variability)
             FoodUnitsNeeded = CInt(10 * MyBase.CalculateRandomValue(100, Variability) / 100)
-            If Rnd.Next(0, 100) < 33 Then
-                Gender = Genders.Male
-            Else
-                Gender = Genders.Female
-            End If
         End Sub
 
         Public Sub AdvanceGeneration(ByVal ShowDetail As Boolean)
@@ -789,7 +602,7 @@ Module Module1
 
         Public Function ReproduceThisPeriod() As Boolean
             Const ReproductionProbability As Double = 0.25
-            If Rnd.Next(0, 100) < ReproductionProbability * 100 And Gender = Genders.Female Then
+            If Rnd.Next(0, 100) < ReproductionProbability * 100 Then
                 Return True
             Else
                 Return False
@@ -804,7 +617,6 @@ Module Module1
             MyBase.Inspect()
             Console.Write("Food needed " & FoodUnitsNeeded & " ")
             Console.Write("Food eaten " & FoodUnitsConsumedThisPeriod & " ")
-            Console.WriteLine("Gender: " & Gender.ToString)
             Console.WriteLine()
         End Sub
     End Class
@@ -816,7 +628,6 @@ Module Module1
             Female
         End Enum
         Private ReproductionRate As Double
-        Private genderRatio As Integer = 50
         Private Const DefaultReproductionRate As Double = 1.2
         Private Const DefaultLifespan As Integer = 4
         Private Const DefaultProbabilityDeathOtherCauses As Double = 0.05
@@ -865,5 +676,6 @@ Module Module1
         End Function
     End Class
 End Module
+
 
 

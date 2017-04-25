@@ -8,3 +8,13 @@ c:\users\cknot\documents\visual studio 2015\Projects\ConsoleApplication2\Console
 c:\users\cknot\documents\visual studio 2015\Projects\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.xml
 c:\users\cknot\documents\visual studio 2015\Projects\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.exe
 c:\users\cknot\documents\visual studio 2015\Projects\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.pdb
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe.config
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.exe
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.xml
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.pdb
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.pdb
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.xml
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.vbprojResolveAssemblyReference.cache
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.Resources.resources
+C:\Users\cknot\Source\Repos\Skeleton-Code\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.vbproj.GenerateResource.Cache
