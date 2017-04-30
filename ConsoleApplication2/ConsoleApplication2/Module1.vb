@@ -165,8 +165,17 @@ Module Module1
 
         Private Function InputCoordinate(ByVal CoordinateName As Char) As Integer
             Dim Coordinate As Integer
-            Console.Write("  Input " & CoordinateName & " coordinate: ")
-            Coordinate = CInt(Console.ReadLine())
+            Dim valid As Boolean = True
+            Do
+                Console.Write("  Input " & CoordinateName & " coordinate: ")
+                Try
+                    Coordinate = CInt(Console.ReadLine())
+                    valid = True
+                Catch ex As Exception
+                    MsgBox("that is not a valid coordinate")
+                    valid = False
+                End Try
+            Loop While valid = False
             Return Coordinate
         End Function
 
@@ -491,15 +500,14 @@ Module Module1
         End Sub
 
         Public Function getCoord(ByVal branch As String) As String
-            If branch = "l" Then
-                Return ("(" + leftBranchX.ToString + "," + leftBranchY.ToString + ")")
-            End If
-            If branch = "r" Then
-                Return ("(" + rightBranchX.ToString + "," + rightBranchY.ToString + ")")
-            End If
-            If branch = "s" Then
-                Return ("(" + selfX.ToString + "," + selfY.ToString + ")")
-            End If
+            Select Case branch
+                Case "l"
+                    Return ("(" + leftBranchX.ToString + "," + leftBranchY.ToString + ")")
+                Case "r"
+                    Return ("(" + rightBranchX.ToString + "," + rightBranchY.ToString + ")")
+                Case "s"
+                    Return ("(" + selfX.ToString + "," + selfY.ToString + ")")
+            End Select
         End Function
 
     End Class
@@ -512,6 +520,7 @@ Module Module1
         Protected AlreadySpread As Boolean = False
         Protected Variability As Integer
         Protected Shared Rnd As New Random()
+        Protected ChangeInNoRabbits As Integer = 0
 
         Public Sub New(ByVal Variability As Integer)
             Me.Variability = Variability
@@ -557,20 +566,24 @@ Module Module1
         End Function
 
         Public Sub AdvanceGeneration(ByVal ShowDetail As Boolean)
+            ChangeInNoRabbits = 0
             PeriodsRun += 1
             If RabbitCount > 0 Then
-                KillByOtherFactors(ShowDetail)
+                ChangeInNoRabbits -= KillByOtherFactors(ShowDetail)
             End If
             If RabbitCount > 0 Then
-                AgeRabbits(ShowDetail)
+                ChangeInNoRabbits -= AgeRabbits(ShowDetail)
             End If
             If RabbitCount > 0 And RabbitCount <= MaxRabbitsInWarren Then
                 If ContainsMales() Then
-                    MateRabbits(ShowDetail)
+                    ChangeInNoRabbits += MateRabbits(ShowDetail)
                 End If
             End If
-            If RabbitCount = 0 And ShowDetail Then
-                Console.WriteLine("  All rabbits in warren are dead")
+            If ShowDetail Then
+                Console.WriteLine(" The change in the number of rabbits in the warren is: " & ChangeInNoRabbits.ToString)
+                If RabbitCount = 0 Then
+                    Console.WriteLine("  All rabbits in warren are dead")
+                End If
             End If
         End Sub
 
@@ -591,7 +604,7 @@ Module Module1
             Return RabbitsToEat
         End Function
 
-        Private Sub KillByOtherFactors(ByVal ShowDetail As Boolean)
+        Private Function KillByOtherFactors(ByVal ShowDetail As Boolean) As Integer
             Dim DeathCount As Integer = 0
             For r = 0 To RabbitCount - 1
                 If Rabbits(r).CheckIfKilledByOtherFactor() Then
@@ -603,9 +616,10 @@ Module Module1
             If ShowDetail Then
                 Console.WriteLine("  " & DeathCount & " rabbits killed by other factors.")
             End If
-        End Sub
+            Return DeathCount
+        End Function
 
-        Private Sub AgeRabbits(ByVal ShowDetail As Boolean)
+        Private Function AgeRabbits(ByVal ShowDetail As Boolean) As Integer
             Dim DeathCount As Integer = 0
             For r = 0 To RabbitCount - 1
                 Rabbits(r).CalculateNewAge()
@@ -618,9 +632,10 @@ Module Module1
             If ShowDetail Then
                 Console.WriteLine("  " & DeathCount & " rabbits die of old age.")
             End If
-        End Sub
+            Return DeathCount
+        End Function
 
-        Private Sub MateRabbits(ByVal ShowDetail As Boolean)
+        Private Function MateRabbits(ByVal ShowDetail As Boolean) As Integer
             Dim Mate As Integer = 0
             Dim Babies As Integer = 0
             Dim CombinedReproductionRate As Double
@@ -640,7 +655,8 @@ Module Module1
             If ShowDetail Then
                 Console.WriteLine("  " & Babies & " baby rabbits born.")
             End If
-        End Sub
+            Return Babies
+        End Function
 
         Private Sub CompressRabbitList(ByVal DeathCount As Integer)
             If DeathCount > 0 Then
